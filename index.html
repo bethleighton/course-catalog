@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Course Catalog</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.3.2/papaparse.min.js"></script>
+</head>
 
+<body>
+
+<h1>Professional Learning Course Catalog</h1>
+
+<input type="text" id="search" placeholder="Search courses..." onkeyup="searchCourses()">
+
+<div id="courses"></div>
+
+<script>
+
+const sheetURL = https://docs.google.com/spreadsheets/d/e/2PACX-1vT62MocbzvTqnquDHlV93VzcsDGritSqZoxr6yzQofgkzUcA7c2lEURsT0_RGuSg3fVarzRQG0hOv8T/pub?output=csv;
+
+Papa.parse(sheetURL, {
+download: true,
+header: true,
+complete: function(results) {
+displayCourses(results.data);
+}
+});
+
+function displayCourses(data) {
+const container = document.getElementById("courses");
+container.innerHTML = "";
+
+data.forEach(course => {
+const div = document.createElement("div");
+
+div.innerHTML =
+"<h3>" + course.Title + "</h3>" +
+"<p><b>Presenter:</b> " + course.Presenter + "</p>" +
+"<p><b>Strand:</b> " + course.Strand + "</p>" +
+"<p><b>Session:</b> " + course.Session_Block + "</p>" +
+"<p>" + course.Description + "</p><hr>";
+
+container.appendChild(div);
+});
+}
+
+function searchCourses() {
+const input = document.getElementById("search").value.toLowerCase();
+const courses = document.querySelectorAll("#courses div");
+
+courses.forEach(course => {
+course.style.display =
+course.innerText.toLowerCase().includes(input) ? "block" : "none";
+});
+}
+
+</script>
+
+</body>
+</html>
